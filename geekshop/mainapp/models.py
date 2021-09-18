@@ -18,6 +18,6 @@ class Product(models.Model):
     ing = models.ImageField(upload_to='products_images', blank=True)
 
     def __str__(self):
-        return f'{self.name}|{self.category}'
+        return f'{self.name} | {self.category}'
 
 # Create your models here.
