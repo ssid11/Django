@@ -64,18 +64,15 @@
                     <div class="card h-100">
                         <a href="#">
                             <img class="card-img-top"
-                                 src="{% static el.img%}"
+                                 src="{{el.ing.url}}"
                                  alt="">
-<!--                                 src="{% static '{{el.img}}'%}"-->
-<!--                            src="{% static '{{el.img}}'%}"-->
-
                         </a>
                         <div class="card-body">
                             <h4 class="card-title">
                                 <a href="#">{{el.name }}</a>
                             </h4>
                             <h5>{{el.price }} руб.</h5>
-                            <p class="card-text">{{el.desc }}</p>
+                            <p class="card-text">{{el.description }}</p>
                         </div>
                         <div class="card-footer text-center">
                             <button type="button" class="btn btn-outline-success">Отправить в корзину</button>
