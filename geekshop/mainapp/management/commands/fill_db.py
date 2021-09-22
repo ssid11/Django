@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
 from mainapp.models import ProductCategory, Product
-from django.contrib.auth.models import User
 
 import json, os
 
@@ -29,5 +28,4 @@ class Command(BaseCommand):
             prod['category'] = ProductCategory.objects.get(id=prod.get('category'))
             new_p = Product(**prod)
             new_p.save()
-        User.objects.all().delete()
-        super_user = User.objects.create_superuser('s', 'a@b.com', '1')
+
