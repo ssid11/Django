@@ -4,6 +4,8 @@ from users.models import User
 from baskets.models import Basket
 
 # Create your views here.
+
+
 def basket_add(request, product_id):
     user_from_request = request.user
     product = Product.objects.get(id=product_id)
