@@ -75,7 +75,7 @@
                             <p class="card-text">{{el.description }}</p>
                         </div>
                         <div class="card-footer text-center">
-                            <button type="button" class="btn btn-outline-success">Отправить в корзину</button>
+                            <a href="{% url 'baskets:basket' el.id %}" class="btn btn-outline-success">Отправить в корзину</a>
                         </div>
                     </div>
                 </div>
