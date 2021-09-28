@@ -1,6 +1,7 @@
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
-from users.models import User
 import django.forms
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
+
+from users.models import User
 
 
 class UserLoginForm(AuthenticationForm):
@@ -32,11 +33,13 @@ class UserRegisterForm(UserCreationForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
 
+
 class UserProfileForm(UserChangeForm):
-    image = django.forms.ImageField(widget=django.forms.FileInput(),required=False)
+    image = django.forms.ImageField(widget=django.forms.FileInput(), required=False)
+
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'image', )
+        fields = ('username', 'email', 'first_name', 'last_name', 'image',)
 
     def __init__(self, *args, **kwargs):
         super(UserChangeForm, self).__init__(*args, **kwargs)

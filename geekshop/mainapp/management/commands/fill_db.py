@@ -1,7 +1,9 @@
-from django.core.management.base import BaseCommand
-from mainapp.models import ProductCategory, Product
+import json
+import os
 
-import json, os
+from django.core.management.base import BaseCommand
+
+from mainapp.models import ProductCategory, Product
 
 JSON_PATH = 'mainapp/fixtures'
 
@@ -28,4 +30,3 @@ class Command(BaseCommand):
             prod['category'] = ProductCategory.objects.get(id=prod.get('category'))
             new_p = Product(**prod)
             new_p.save()
-
