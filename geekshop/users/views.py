@@ -8,21 +8,6 @@ from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 
 
 # Create your views here.
-def total_products(request):
-    all_baskets = Basket.objects.filter(user=request.user)
-    prods = 0
-    for el in all_baskets:
-        prods += el.quantity
-    return prods
-
-
-def total_sum(request):
-    all_baskets = Basket.objects.filter(user=request.user)
-    sum = 0
-    for el in all_baskets:
-        sum += el.quantity * el.product.price
-    return sum
-
 
 def login(request):
     if request.method == 'POST':
@@ -82,7 +67,5 @@ def profile(request):
         'title': 'GeekShop - Профиль',
         'form': form,
         'baskets': Basket.objects.filter(user=request.user),
-        'total_prods': total_products(request),
-        'total_sum': total_sum(request),
     }
     return render(request, 'users/profile.html', content)
