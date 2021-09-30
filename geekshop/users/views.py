@@ -1,27 +1,13 @@
 from django.contrib import auth, messages
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 from baskets.models import Basket
 from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 
 
 # Create your views here.
-def total_products(request):
-    all_baskets = Basket.objects.filter(user=request.user)
-    prods = 0
-    for el in all_baskets:
-        prods += el.quantity
-    return prods
-
-
-def total_sum(request):
-    all_baskets = Basket.objects.filter(user=request.user)
-    sum = 0
-    for el in all_baskets:
-        sum += el.quantity * el.product.price
-    return sum
-
 
 def login(request):
     if request.method == 'POST':
@@ -60,12 +46,12 @@ def register(request):
                }
     return render(request, 'users/register.html', content)
 
-
+@login_required
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('index'))
 
-
+@login_required
 def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(data=request.POST, instance=request.user, files=request.FILES)
@@ -81,7 +67,5 @@ def profile(request):
         'title': 'GeekShop - Профиль',
         'form': form,
         'baskets': Basket.objects.filter(user=request.user),
-        'total_prods': total_products(request),
-        'total_sum': total_sum(request),
     }
     return render(request, 'users/profile.html', content)
