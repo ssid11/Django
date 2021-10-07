@@ -1,12 +1,13 @@
 from django.urls import reverse_lazy
 
 from admins.forms import UserAdminRegisterForm, UserAdminProfileForm
-from mainapp.models import Product
+from mainapp.models import Product, ProductCategory
 from users.models import User
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from  django.http import HttpResponseRedirect
 from geekshop.mixin import CustomDispatchMixin
+from .forms import CategoryCreateForm
 # Create your views here.
 
 def index(request):
@@ -70,3 +71,72 @@ class ProductUpdateView(UpdateView, CustomDispatchMixin):
         context = super(UserUpdateView, self).get_context_data(**kwargs)
         context['title'] = 'Админпанель | Редактирование пользователя'
         return context
+
+class CategoryListView(ListView, CustomDispatchMixin):
+    model = ProductCategory
+    template_name = 'admins/admin-categories-read.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(CategoryListView, self).get_context_data(**kwargs)
+        context['title'] = 'Админпанель | Категории'
+        return context
+
+class CategoryUpdateView(UpdateView, CustomDispatchMixin):
+    model = ProductCategory
+    template_name = 'admins/admin-categories-update-delete.html'
+    form_class = UserAdminProfileForm
+    success_url = reverse_lazy('admins:admins_user')
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(UserUpdateView, self).get_context_data(**kwargs)
+        context['title'] = 'Админпанель | Редактирование пользователя'
+        return context
+
+# class CategoryCreateView(CreateView, CustomDispatchMixin):
+#     model = ProductCategory
+#     template_name = 'admins/admin-categories-create.html'
+#     form_class = CategoryCreateForm
+#     success_url = reverse_lazy('admins:admins_category')
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super(CategoryCreateView, self).get_context_data(**kwargs)
+#         context['title'] = 'Админпанель | Создание категории'
+#         return context
+
+def admins_category_create(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = CategoryCreateForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            form.save()
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect(reverse_lazy('admins:admins_category'))
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = CategoryCreateForm()
+
+    return render(request,'admins/admin-categories-create.html', {'title':'административная панель', 'form': form})
+
+def admins_category_update(request, pk):
+    if request.method == 'POST':
+        pass
+    #     # create a form instance and populate it with data from the request:
+    #     form = CategoryCreateForm(request.POST)
+    #     # check whether it's valid:
+    #     if form.is_valid():
+    #         category = ProductCategory.objects.get(id=pk)
+    #
+    #         # process the data in form.cleaned_data as required
+    #         # ...
+    #         # redirect to a new URL:
+    #         return HttpResponseRedirect(reverse_lazy('admins:admins_category'))
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        category = ProductCategory.objects.get(id=pk)
+        form = CategoryCreateForm(instance=category)
+
+    return render(request,'admins/admin-categories-create.html', {'title':'административная панель', 'form': form})

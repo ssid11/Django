@@ -1,6 +1,7 @@
 from django import forms
 from users.forms import UserRegisterForm, UserProfileForm
 from users.models import User
+from mainapp.models import ProductCategory
 
 class UserAdminRegisterForm(UserRegisterForm):
     image = forms.ImageField(widget=forms.FileInput(), required=False)
@@ -25,4 +26,9 @@ class UserAdminProfileForm(UserProfileForm):
         super(UserProfileForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['readonly'] = False
         self.fields['email'].widget.attrs['readonly'] = False
+
+class CategoryCreateForm(forms.ModelForm):
+    class Meta:
+        model = ProductCategory
+        fields = ['name', 'description']
 

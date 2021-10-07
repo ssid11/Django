@@ -5,11 +5,11 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid">
-                <h1 class="mt-4">Номенклатура</h1>
+                <h1 class="mt-4">Категории</h1>
                 <div class="card mb-4">
                     <div class="card-header">
                         <i class="fas fa-table mr-1"></i>
-                        Номенклатура
+                        Категории
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -18,10 +18,10 @@
                                 <tr>
                                     <th>Наименование</th>
                                     <th>Описание</th>
-                                    <th>Количество</th>
-                                    <th>Цена</th>
-                                    <th>Фото</th>
-                                    <th>Категория</th>
+<!--                                    <th>Количество</th>-->
+<!--                                    <th>Цена</th>-->
+<!--                                    <th>Фото</th>-->
+<!--                                    <th>Категория</th>-->
                                 </tr>
                                 </thead>
 <!--                                <tfoot>-->
@@ -35,14 +35,14 @@
 <!--                                </tr>-->
 <!--                                </tfoot>-->
                                 <tbody>
-                                {% for product in object_list %}
+                                {% for category in object_list %}
                                 <tr>
-                                    <td><a href="{% url 'admins:admins_product_update' product.id %}" style="color: dodgerblue">{{product.name}}</a></td>
-                                    <td>{{product.description}}</td>
-                                    <td>{{product.quantity}}</td>
-                                    <td>{{product.price}}</td>
-                                    <td class="text-center"><img src="{{product.ing.url}}"></td>
-                                    <td >{{product.category}}</td>
+                                    <td><a href="{% url 'admins:admins_category_update' category.id %}" style="color: dodgerblue">{{category.name}}</a></td>
+                                    <td>{{category.description}}</td>
+<!--                                    <td>{{product.quantity}}</td>-->
+<!--                                    <td>{{product.price}}</td>-->
+<!--                                    <td class="text-center"><img src="{{product.ing.url}}"></td>-->
+<!--                                    <td >{{product.category}}</td>-->
                                 </tr>
                                 {% endfor %}
                                 </tbody>
@@ -50,8 +50,8 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="{% url 'admins:admins_user_create'%}">
-                            <button class="btn btn-success">Создать пользователя</button>
+                        <a href="{% url 'admins:admins_category_create'%}">
+                            <button class="btn btn-success">Создать категорию</button>
                         </a>
                     </div>
                 </div>
