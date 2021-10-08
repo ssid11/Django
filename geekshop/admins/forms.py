@@ -32,3 +32,8 @@ class CategoryCreateForm(forms.ModelForm):
         model = ProductCategory
         fields = ['name', 'description']
 
+class CategoryUpdateForm(forms.ModelForm):
+    class Meta:
+        model = ProductCategory
+        fields = ['name', 'description']
+
