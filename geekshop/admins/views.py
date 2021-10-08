@@ -101,9 +101,9 @@ class CategoryCreateView(CreateView, CustomDispatchMixin):
         context['title'] = 'Админпанель | Создание категории'
         return context
 
-class CategoryDeleteView(DeleteView, CustomDispatchMixin):
+class CategoryDeleteView(DeleteView):
 
-    model = User
+    model = ProductCategory
     template_name = 'admins/admin-users-update-delete.html'
     success_url = reverse_lazy('admins:admins_category')
 

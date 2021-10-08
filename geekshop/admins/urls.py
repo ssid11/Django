@@ -16,7 +16,7 @@ Including another URLconf
 from django.urls import path
 
 from .views import index, UserDeleteView, UserListView, UserUpdateView, UserCreateView, ProductListView, \
-    ProductUpdateView, CategoryListView, CategoryUpdateView, CategoryCreateView
+    ProductUpdateView, CategoryListView, CategoryUpdateView, CategoryCreateView, CategoryDeleteView
 
 app_name = 'admins'
 urlpatterns = [
@@ -29,5 +29,6 @@ urlpatterns = [
     path('products-update/<int:pk>', ProductUpdateView.as_view(), name='admins_product_update'),
     path('categories/', CategoryListView.as_view(), name='admins_category'),
     path('categories-update/<int:pk>', CategoryUpdateView.as_view(), name='admins_category_update'),
-    path('categories-create/', CategoryCreateView, name='admins_category_create'),
+    path('categories-create/', CategoryCreateView.as_view(), name='admins_category_create'),
+    path('categories-delete/<int:pk>', CategoryDeleteView.as_view(), name='admins_category_delete'),
 ]
