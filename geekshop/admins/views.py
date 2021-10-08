@@ -118,7 +118,7 @@ def admins_category_create(request):
     else:
         form = CategoryCreateForm()
 
-    return render(request,'admins/admin-categories-create.html', {'title':'административная панель', 'form': form})
+    return render(request,'admins/admin-categories-create.html', {'title':'административная панель | Создание категории', 'form': form})
 
 def admins_category_update(request, pk):
     if request.method == 'POST':
