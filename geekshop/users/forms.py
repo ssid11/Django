@@ -55,6 +55,7 @@ class UserProfileForm(UserChangeForm):
 
     def clean_image(self):
         data = self.cleaned_data['image']
-        if data.size > 100000:
-            raise django.forms.ValidationError('Файл слишком велик.')
+        if  data :
+            if data.size > 100000:
+                raise django.forms.ValidationError('Файл слишком велик.')
         return data
