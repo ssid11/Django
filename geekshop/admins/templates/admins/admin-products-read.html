@@ -31,7 +31,7 @@
                                     <td>{{product.description}}</td>
                                     <td>{{product.quantity}}</td>
                                     <td>{{product.price}}</td>
-                                    <td class="text-center"><img src="{{product.ing.url}}"></td>
+                                    <td class="text-center"><img src="{{product.ing.url}}" height="200" width="200"></td>
                                     <td >{{product.category}}</td>
                                 </tr>
                                 {% endfor %}
@@ -41,7 +41,7 @@
                     </div>
                     <div class="card-footer">
                         <a href="{% url 'admins:admins_user_create'%}">
-                            <button class="btn btn-success">Создать пользователя</button>
+                            <button class="btn btn-success">Создать номенклатуру</button>
                         </a>
                     </div>
                 </div>
