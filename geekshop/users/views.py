@@ -39,7 +39,9 @@ class UserLoginView(LoginView, BaseClassContextMixin):
     # fields = ('login', 'password')
     form_class = UserLoginForm
     title = 'Авторизация'
-    message = 'Нужен аккаунт? Зарегистрируйся',
+    message = 'Нужен аккаунт? Зарегистрируйся'
+    col_lg = 'col-lg-5'
+    action: 'Авторизация'
     # success_url = reverse_lazy('/')
     
     def get_context_data(self, *, object_list=None, **kwargs):
