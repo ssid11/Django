@@ -1,11 +1,30 @@
-$('document').ready(
+window.onload =
 function () {
-console.log('load')
- $('.category').on('click', 'a', function(){
-//    var t_href = event.target;
-    console.log(event);
-    console.log('click');
 
-   event.preventDefault();
+ $('.category').on('click', 'a',  function(){
+    var t_href = event.target;
+    console.log(t_href.id)
+    console.log($(this).serialize())
+    $.ajax({
+        url:'/products/cat_change/'+ t_href.id + '/',
+        success: function(data){
+            $('.product_box').html(data.result)
+        }
+    })
+//    event.preventDefault();
+return false
  });
- })
+
+ $('.baskets_lst').on('click', 'input[type="number"]',  function(){
+    var t_href = event.target;
+    console.log(t_href.value)
+    $.ajax({
+        url:'/baskets/edit/'+ t_href.name + '/' + t_href.value + '/',
+        success: function(data){
+            $('.baskets_lst').html(data.result)
+        }
+    })
+//    event.preventDefault();
+return false
+ });
+};

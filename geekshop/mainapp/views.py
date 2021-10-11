@@ -1,5 +1,7 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import render, HttpResponseRedirect
+from django.template.loader import render_to_string
 
 from .models import Product, ProductCategory
 
@@ -25,3 +27,13 @@ def products(request, category_id=None, page_id=1):
     context.update({'products': products_paginator})
 
     return render(request, 'mainapp/products.html', context)
+
+def cat_change(request, id):
+    if request.is_ajax():
+        products = Product.objects.filter(category=id)
+        try:
+            result = render_to_string('mainapp/produts_box.html',{'products': products})
+        except Exception as e:
+            print(e)
+        return  JsonResponse({'result': result})
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
