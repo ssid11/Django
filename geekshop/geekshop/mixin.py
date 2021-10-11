@@ -9,7 +9,9 @@ class CustomDispatchMixin(View):
 
 class BaseClassContextMixin(ContextMixin):
     title = ''
+    message = ''
     def get_context_data(self, **kwargs):
         context = super(BaseClassContextMixin, self).get_context_data(**kwargs)
         context['title'] = self.title
+        context['message'] = self.message
         return context
