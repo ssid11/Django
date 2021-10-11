@@ -8,7 +8,7 @@ from baskets.models import Basket
 from geekshop.mixin import BaseClassContextMixin
 from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from users.models import User
-from django.views.generic import ListView
+from django.views.generic import ListView, FormView
 
 
 # Create your views here.
@@ -46,6 +46,19 @@ class UserLoginView(LoginView, BaseClassContextMixin):
     
     def get_context_data(self, *, object_list=None, **kwargs):
         return super(UserLoginView, self).get_context_data(**kwargs)
+
+class UserRegisterView(FormView,BaseClassContextMixin):
+    title = 'Регистрация'
+    message = 'Уже есть аккаунт? Авторизоваться'
+    col_lg = 'col-col-lg-7lg-5'
+    action: 'Регистрация'
+    template_name = 'users/register.html'
+    model = User
+    form_class = UserRegisterForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        return super(UserLoginView, self).get_context_data(**kwargs)
+    # 1:18
 
 
 def register(request):
