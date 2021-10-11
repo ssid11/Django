@@ -1,6 +1,6 @@
 from django.contrib import auth, messages
 from django.contrib.auth.views import LoginView, LogoutView
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 
@@ -55,9 +55,17 @@ class UserRegisterView(FormView,BaseClassContextMixin):
     template_name = 'users/register.html'
     model = User
     form_class = UserRegisterForm
+    success_url = reverse_lazy('users:login')
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        return super(UserLoginView, self).get_context_data(**kwargs)
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success('Вы зарегистрированы.')
+            return redirect(self.success_url)
+        return redirect(self.success_url)
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     return super(UserRegisterView, self).get_context_data(**kwargs)
     # 1:18
 
 
