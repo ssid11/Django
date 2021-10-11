@@ -36,22 +36,12 @@ def login(request):
 class UserLoginView(LoginView, BaseClassContextMixin):
     template_name = 'users/login.html'
     model = User
-    # fields = ('login', 'password')
     form_class = UserLoginForm
     title = 'Авторизация'
-    message = 'Нужен аккаунт? Зарегистрируйся'
-    col_lg = 'col-lg-5'
-    action: 'Авторизация'
-    # success_url = reverse_lazy('/')
-    
-    def get_context_data(self, *, object_list=None, **kwargs):
-        return super(UserLoginView, self).get_context_data(**kwargs)
+
 
 class UserRegisterView(FormView,BaseClassContextMixin):
     title = 'Регистрация'
-    message = 'Уже есть аккаунт? Авторизоваться'
-    col_lg = 'col-col-lg-7lg-5'
-    action: 'Регистрация'
     template_name = 'users/register.html'
     model = User
     form_class = UserRegisterForm
@@ -61,7 +51,6 @@ class UserRegisterView(FormView,BaseClassContextMixin):
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
-            messages.success('Вы зарегистрированы.')
             return redirect(self.success_url)
         return redirect(self.success_url)
     # def get_context_data(self, *, object_list=None, **kwargs):
