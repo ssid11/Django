@@ -8,7 +8,7 @@ from baskets.models import Basket
 from geekshop.mixin import BaseClassContextMixin
 from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from users.models import User
-from django.views.generic import ListView, FormView
+from django.views.generic import ListView, FormView, UpdateView
 
 
 # Create your views here.
@@ -53,9 +53,7 @@ class UserRegisterView(FormView,BaseClassContextMixin):
             form.save()
             return redirect(self.success_url)
         return redirect(self.success_url)
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     return super(UserRegisterView, self).get_context_data(**kwargs)
-    # 1:18
+
 
 
 def register(request):
@@ -74,10 +72,10 @@ def register(request):
                }
     return render(request, 'users/register.html', content)
 
-# @login_required
-# def logout(request):
-#     auth.logout(request)
-#     return HttpResponseRedirect(reverse('index'))
+@login_required
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect(reverse('index'))
 
 @login_required
 def profile(request):
@@ -100,3 +98,25 @@ def profile(request):
 
 class Logout(LogoutView):
     template_name = 'mainapp/index.html'
+
+class UserProfileView(UpdateView):
+    title = 'Регистрация'
+    template_name = 'users/profile.html'
+    model = User
+    form_class = UserProfileForm
+    success_url = reverse_lazy('users:profile')
+
+    def get(self, request, *args, **kwargs):
+        return super(UserProfileView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(UserProfileView, self).get_context_data(**kwargs)
+        context['baskets'] = Basket.objects.filter(user=self.request.user)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(data=request.POST,file=request.FILES,instance=self.get_object())
+        if form.is_valid():
+            form.save()
+            return redirect(self.success_url)
+        return redirect(self.success_url)
