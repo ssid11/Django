@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.urls import path
 
-from .views import login, register, profile, UserLoginView, Logout, UserRegisterView, UserProfileView
+from .views import login, register, profile, UserLoginView, Logout, UserRegisterView
 
 app_name = 'users'
 urlpatterns = [
@@ -23,8 +23,8 @@ urlpatterns = [
     path('login/', UserLoginView.as_view(), name='login'),
     # path('register/', register, name='register'),
     path('register/', UserRegisterView.as_view(), name='register'),
-    path('profile/', profile, name='profile'),
-    # path('profile/', UserProfileView.as_view(), name='profile'),
+    # path('profile/', profile, name='profile'),
+    path('profile/', UserProfileView.as_view(), name='profile'),
     # path('logout/', logout, name='logout'),
     path('logout/', Logout.as_view(), name='logout'),
 ]

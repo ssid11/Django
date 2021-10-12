@@ -8,7 +8,7 @@ from baskets.models import Basket
 from geekshop.mixin import BaseClassContextMixin
 from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from users.models import User
-from django.views.generic import ListView, FormView, UpdateView
+from django.views.generic import ListView, FormView
 
 
 # Create your views here.
@@ -53,7 +53,9 @@ class UserRegisterView(FormView,BaseClassContextMixin):
             form.save()
             return redirect(self.success_url)
         return redirect(self.success_url)
-
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     return super(UserRegisterView, self).get_context_data(**kwargs)
+    # 1:18
 
 
 def register(request):
@@ -72,10 +74,10 @@ def register(request):
                }
     return render(request, 'users/register.html', content)
 
-@login_required
-def logout(request):
-    auth.logout(request)
-    return HttpResponseRedirect(reverse('index'))
+# @login_required
+# def logout(request):
+#     auth.logout(request)
+#     return HttpResponseRedirect(reverse('index'))
 
 @login_required
 def profile(request):
@@ -107,6 +109,7 @@ class UserProfileView(UpdateView):
     success_url = reverse_lazy('users:profile')
 
     def get(self, request, *args, **kwargs):
+        kwargs['pk'] = request.user.pk
         return super(UserProfileView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
