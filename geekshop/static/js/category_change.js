@@ -27,4 +27,17 @@ return false
 //    event.preventDefault();
 return false
  });
+
+ $('.sale').on('click', 'a',  function(){
+    var t_href = event.target;
+    console.log(t_href.id)
+    $.ajax({
+        url:'/baskets/add_ajax/'+ t_href.id + '/',
+        success: function(data){
+        alert(data.result)
+        }
+    })
+//    event.preventDefault();
+return false
+ });
 };
