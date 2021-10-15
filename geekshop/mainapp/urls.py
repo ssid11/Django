@@ -15,9 +15,12 @@ Including another URLconf
 """
 from django.urls import path
 
-from .views import products
+from .views import products, cat_change
 
 app_name = 'products'
 urlpatterns = [
     path('', products, name='index'),
+    path('category/<int:category_id>/', products, name='category'),
+    path('page/<int:page_id>/', products, name='page'),
+    path('cat_change/<int:id>/', cat_change, name='cat_change'),
 ]

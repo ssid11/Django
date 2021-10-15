@@ -1,7 +1,8 @@
 from django import forms
 from users.forms import UserRegisterForm, UserProfileForm
 from users.models import User
-from mainapp.models import ProductCategory
+from mainapp.models import ProductCategory, Product
+
 
 class UserAdminRegisterForm(UserRegisterForm):
     image = forms.ImageField(widget=forms.FileInput(), required=False)
@@ -37,3 +38,7 @@ class CategoryUpdateForm(forms.ModelForm):
         model = ProductCategory
         fields = ['name', 'description']
 
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description','category','ing' ]

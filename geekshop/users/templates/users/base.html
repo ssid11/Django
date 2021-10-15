@@ -18,12 +18,11 @@
         <main>
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class={{col_lg}}>
+            <div class="col-lg-5">
                         {% block err_handle%}
                         {% endblock %}
                         <div class="card shadow-lg border-0 rounded-lg mt-5">
-                            <div class="card-header"><h3 class="text-center font-weight-light my-4">{{action}}</h3>
-                            </div>
+
                             <div class="card-body">
                                 {% block content%}
                                 {%endblock%}
@@ -33,8 +32,8 @@
                                 {% endblock%}
                             </div>
                         </div>
+            </div>
                     </div>
-                </div>
             </div>
         </main>
     </div>

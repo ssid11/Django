@@ -1,10 +1,14 @@
 from django.contrib import auth, messages
-from django.shortcuts import render, HttpResponseRedirect
-from django.urls import reverse
+from django.contrib.auth.views import LoginView, LogoutView
+from django.shortcuts import render, HttpResponseRedirect, redirect
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 
 from baskets.models import Basket
+from geekshop.mixin import BaseClassContextMixin
 from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from users.models import User
+from django.views.generic import ListView, FormView, UpdateView
 
 
 # Create your views here.
@@ -28,6 +32,28 @@ def login(request):
                'form': form,
                }
     return render(request, 'users/login.html', content)
+
+class UserLoginView(LoginView, BaseClassContextMixin):
+    template_name = 'users/login.html'
+    model = User
+    form_class = UserLoginForm
+    title = 'Авторизация'
+
+
+class UserRegisterView(FormView,BaseClassContextMixin):
+    title = 'Регистрация'
+    template_name = 'users/register.html'
+    model = User
+    form_class = UserRegisterForm
+    success_url = reverse_lazy('users:login')
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(self.success_url)
+        return redirect(self.success_url)
+
 
 
 def register(request):
@@ -69,3 +95,29 @@ def profile(request):
         'baskets': Basket.objects.filter(user=request.user),
     }
     return render(request, 'users/profile.html', content)
+
+class Logout(LogoutView):
+    template_name = 'mainapp/index.html'
+
+class UserProfileView(UpdateView):
+    title = 'Регистрация'
+    template_name = 'users/profile.html'
+    model = User
+    form_class = UserProfileForm
+    success_url = reverse_lazy('users:profile')
+
+    def get_context_data(self, **kwargs):
+        context = super(UserProfileView, self).get_context_data(**kwargs)
+        context['baskets'] = Basket.objects.filter(user=self.request.user)
+        return context
+
+    def get_object(self, queryset=None):
+        return User.objects.get(id=self.request.user.pk)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(data=request.POST,files=request.FILES,instance=self.get_object())
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Вы успешно прошли регистрацию")
+            return redirect(self.success_url)
+        return redirect(self.success_url)
