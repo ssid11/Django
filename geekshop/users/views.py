@@ -115,7 +115,7 @@ class UserProfileView(UpdateView):
         return User.objects.get(id=self.request.user.pk)
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(data=request.POST,file=request.FILES,instance=self.get_object())
+        form = self.form_class(data=request.POST,files=request.FILES,instance=self.get_object())
         if form.is_valid():
             form.save()
             messages.success(request, "Вы успешно прошли регистрацию")
