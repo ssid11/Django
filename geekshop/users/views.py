@@ -4,7 +4,7 @@ from django.shortcuts import render, HttpResponseRedirect, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 
-from baskets.models import Basket
+# from baskets.models import Basket
 from geekshop.mixin import BaseClassContextMixin
 from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from users.models import User
@@ -92,7 +92,7 @@ def profile(request):
     content = {
         'title': 'GeekShop - Профиль',
         'form': form,
-        'baskets': Basket.objects.filter(user=request.user),
+        # 'baskets': Basket.objects.filter(user=request.user),
     }
     return render(request, 'users/profile.html', content)
 
@@ -105,11 +105,11 @@ class UserProfileView(UpdateView):
     model = User
     form_class = UserProfileForm
     success_url = reverse_lazy('users:profile')
-
-    def get_context_data(self, **kwargs):
-        context = super(UserProfileView, self).get_context_data(**kwargs)
-        context['baskets'] = Basket.objects.filter(user=self.request.user)
-        return context
+    #
+    # def get_context_data(self, **kwargs):
+    #     context = super(UserProfileView, self).get_context_data(**kwargs)
+    #     context['baskets'] = Basket.objects.filter(user=self.request.user)
+    #     return context
 
     def get_object(self, queryset=None):
         return User.objects.get(id=self.request.user.pk)
