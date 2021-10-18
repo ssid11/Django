@@ -11,9 +11,16 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+settings_path = os.path.join(BASE_DIR,'.env')
+if os.path.exists(settings_path):
+    load_dotenv(settings_path)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -130,3 +137,18 @@ MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/'
+
+
+DOMAIN_NAME = 'http://localhost:8000'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = '25'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = True if os.getenv('EMAIL_USE_SSL') == 'True' else False
+
+# вариант python -m smtpd -n -c DebuggingServer localhost:25
+# EMAIL_HOST_USER, EMAIL_HOST_PASSWORD = None, None
+
+# вариант логирования сообщений почты в виде файлов вместо отправки
+# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# EMAIL_FILE_PATH = 'tmp/email-messages/'
