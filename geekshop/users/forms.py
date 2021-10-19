@@ -1,5 +1,9 @@
+from hashlib import sha1
+from random import random
+
 import django.forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
+from django.core.exceptions import ValidationError
 
 from users.models import User
 
@@ -32,6 +36,21 @@ class UserRegisterForm(UserCreationForm):
         self.fields['password2'].widget.attrs['placeholder'] = 'Подтвердите пароль'
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
+
+    def save(self, commit=True):
+        user = super(UserRegisterForm, self).save()
+        user.is_active = False
+        salt = sha1((str(random)).encode('utf8')).hexdigest()[:6]
+        user.activation_key = sha1((user.email + salt).encode('utf8')).hexdigest()
+        user.save()
+        return user
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if User.objects.filter(email=cleaned_data.get('email')).count() > 0:
+            raise ValidationError('Адрес электронной почты не уникален.')
+
+
 
 
 class UserProfileForm(UserChangeForm):
