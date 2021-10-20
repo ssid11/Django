@@ -1,5 +1,7 @@
 from django.contrib import auth, messages
 from django.contrib.auth.views import LoginView, LogoutView
+from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
 from django.shortcuts import render, HttpResponseRedirect, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
@@ -9,6 +11,7 @@ from geekshop.mixin import BaseClassContextMixin
 from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from users.models import User
 from django.views.generic import ListView, FormView, UpdateView
+from django.conf import settings
 
 
 # Create your views here.
@@ -50,9 +53,17 @@ class UserRegisterView(FormView,BaseClassContextMixin):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            if send_verify_link(user):
+                messages.success(request,'Вы успешно зарегистрировались. Проверьте почту.')
             return redirect(self.success_url)
+
+        messages.error(request, str(form.errors))
         return redirect(self.success_url)
+
+
+
+
 
 
 
@@ -121,3 +132,25 @@ class UserProfileView(UpdateView):
             messages.success(request, "Вы успешно прошли регистрацию")
             return redirect(self.success_url)
         return redirect(self.success_url)
+
+def send_verify_link(user):
+    verify_link = reverse('users:verify', args=[user.email, user.activation_key])
+    subject = f'Активация пользователя {user.username}'
+    message = f'Для подтверждения учетной записи {user.username} на портале GeekShop \n' \
+              f' пройдите по ссылке {settings.DOMAIN_NAME}{verify_link}'
+    return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+
+
+def verify(request, email, activation_key):
+    try:
+        user = User.objects.get(email = email)
+        if user and user.activation_key == activation_key and not user.is_activation_key_expired():
+            user.activation_key_created=None
+            user.activation_key=''
+            user.is_active = True
+            user.save()
+            auth.login(request, user)
+        return render(request,'users/verification.html')
+    except Exception as e:
+        HttpResponseRedirect(reverse('index'))
+
