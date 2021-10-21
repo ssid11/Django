@@ -82,8 +82,8 @@ class UserProfileEditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UserProfileEditForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs['readonly'] = True
-        self.fields['email'].widget.attrs['readonly'] = True
+        # self.fields['username'].widget.attrs['readonly'] = True
+        # self.fields['email'].widget.attrs['readonly'] = True
         for field_name, field in self.fields.items():
             if field_name != 'gender':
                 field.widget.attrs['class'] = 'form-control py-4'
