@@ -1,12 +1,13 @@
 from hashlib import sha1
 from random import random
-
 import django.forms
+from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
-from users.models import User
-
+from users.models import User, UserProfile
 
 class UserLoginForm(AuthenticationForm):
     class Meta:
@@ -50,9 +51,6 @@ class UserRegisterForm(UserCreationForm):
         if User.objects.filter(email=cleaned_data.get('email')).count() > 0:
             raise ValidationError('Адрес электронной почты не уникален.')
 
-
-
-
 class UserProfileForm(UserChangeForm):
     image = django.forms.ImageField(widget=django.forms.FileInput(), required=False)
 
@@ -74,3 +72,33 @@ class UserProfileForm(UserChangeForm):
             if data.size > 100000:
                 raise django.forms.ValidationError('Файл слишком велик.')
         return data
+
+class UserProfileEditForm(forms.ModelForm):
+
+
+    class Meta:
+        model = UserProfile
+        fields = ('tagline', 'about', 'gender', )
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileEditForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['readonly'] = True
+        self.fields['email'].widget.attrs['readonly'] = True
+        for field_name, field in self.fields.items():
+            if field_name != 'gender':
+                field.widget.attrs['class'] = 'form-control py-4'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            UserProfile.objects.create(user=instance)
+
+
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.userprofile.save()
+
+
+

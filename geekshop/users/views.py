@@ -8,10 +8,11 @@ from django.contrib.auth.decorators import login_required
 
 from baskets.models import Basket
 from geekshop.mixin import BaseClassContextMixin
-from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm, UserProfileEditForm
 from users.models import User
 from django.views.generic import ListView, FormView, UpdateView
 from django.conf import settings
+
 
 
 # Create your views here.
@@ -122,7 +123,8 @@ class UserProfileView(UpdateView):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(data=request.POST,files=request.FILES,instance=self.get_object())
-        if form.is_valid():
+        form_edit = UserProfileEditForm(data=request.POST, instance=request.user.userprofile)
+        if form.is_valid() and form_edit.is_valid():
             form.save()
             messages.success(request, "Вы успешно прошли регистрацию")
             return redirect(self.success_url)
@@ -144,7 +146,7 @@ def verify(request, email, activation_key):
             user.activation_key=''
             user.is_active = True
             user.save()
-            auth.login(request, user)
+            auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return render(request,'users/verification.html')
     except Exception as e:
         HttpResponseRedirect(reverse('index'))
