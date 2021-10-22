@@ -123,11 +123,11 @@ class UserProfileView(UpdateView):
         return User.objects.get(id=self.request.user.pk)
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(data=request.POST,files=request.FILES,instance=self.get_object())
+        form = self.form_class(data=request.POST,files=request.FILES,instance=request.user)
         edit_form = UserProfileEditForm(data=request.POST, instance=request.user.userprofile)
         if form.is_valid() and edit_form.is_valid():
             form.save()
-            edit_form.save()
+            # edit_form.save()
             # messages.success(request, "Вы успешно прошли регистрацию")
             return redirect(self.success_url)
         return redirect(self.success_url)
