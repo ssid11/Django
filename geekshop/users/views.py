@@ -8,33 +8,34 @@ from django.contrib.auth.decorators import login_required
 
 from baskets.models import Basket
 from geekshop.mixin import BaseClassContextMixin
-from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm, UserProfileEditForm
 from users.models import User
 from django.views.generic import ListView, FormView, UpdateView
 from django.conf import settings
 
 
+
 # Create your views here.
 
-def login(request):
-    if request.method == 'POST':
-        form = UserLoginForm(data=request.POST)
-        if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = auth.authenticate(username=username, password=password)
-            if user.is_active:
-                auth.login(request, user)
-                return HttpResponseRedirect(reverse('index'))
-
-
-    else:
-        form = UserLoginForm()
-    content = {'title': 'Авторизация', 'col_lg': 'col-lg-5', 'action': 'Авторизация',
-               'message': 'Нужен аккаунт? Зарегистрируйся',
-               'form': form,
-               }
-    return render(request, 'users/login.html', content)
+# def login(request):
+#     if request.method == 'POST':
+#         form = UserLoginForm(data=request.POST)
+#         if form.is_valid():
+#             username = request.POST['username']
+#             password = request.POST['password']
+#             user = auth.authenticate(username=username, password=password)
+#             if user.is_active:
+#                 auth.login(request, user)
+#                 return HttpResponseRedirect(reverse('index'))
+#
+#
+#     else:
+#         form = UserLoginForm()
+#     content = {'title': 'Авторизация', 'col_lg': 'col-lg-5', 'action': 'Авторизация',
+#                'message': 'Нужен аккаунт? Зарегистрируйся',
+#                'form': form,
+#                }
+#     return render(request, 'users/login.html', content)
 
 class UserLoginView(LoginView, BaseClassContextMixin):
     template_name = 'users/login.html'
@@ -62,50 +63,45 @@ class UserRegisterView(FormView,BaseClassContextMixin):
         return redirect(self.success_url)
 
 
+# def register(request):
+#     if request.method == 'POST':
+#         form = UserRegisterForm(data=request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "Вы успешно прошли регистрацию")
+#             return HttpResponseRedirect(reverse('users:login'))
+#
+#     else:
+#         form = UserRegisterForm()
+#     content = {'title': 'Регистрация', 'col_lg': 'col-lg-7', 'action': 'Регистрация',
+#                'message': 'Уже есть аккаунт? Авторизоваться',
+#                'form': form,
+#                }
+#     return render(request, 'users/register.html', content)
 
+# @login_required
+# def logout(request):
+#     auth.logout(request)
+#     return HttpResponseRedirect(reverse('index'))
 
-
-
-
-def register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Вы успешно прошли регистрацию")
-            return HttpResponseRedirect(reverse('users:login'))
-
-    else:
-        form = UserRegisterForm()
-    content = {'title': 'Регистрация', 'col_lg': 'col-lg-7', 'action': 'Регистрация',
-               'message': 'Уже есть аккаунт? Авторизоваться',
-               'form': form,
-               }
-    return render(request, 'users/register.html', content)
-
-@login_required
-def logout(request):
-    auth.logout(request)
-    return HttpResponseRedirect(reverse('index'))
-
-@login_required
-def profile(request):
-    if request.method == 'POST':
-        form = UserProfileForm(data=request.POST, instance=request.user, files=request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('users:profile'))
-        else:
-            print(form.errors)
-
-    else:
-        form = UserProfileForm(instance=request.user)
-    content = {
-        'title': 'GeekShop - Профиль',
-        'form': form,
-        'baskets': Basket.objects.filter(user=request.user),
-    }
-    return render(request, 'users/profile.html', content)
+# @login_required
+# def profile(request):
+#     if request.method == 'POST':
+#         form = UserProfileForm(data=request.POST, instance=request.user, files=request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponseRedirect(reverse('users:profile'))
+#         else:
+#             print(form.errors)
+#
+#     else:
+#         form = UserProfileForm(instance=request.user)
+#     content = {
+#         'title': 'GeekShop - Профиль',
+#         'form': form,
+#         'baskets': Basket.objects.filter(user=request.user),
+#     }
+#     return render(request, 'users/profile.html', content)
 
 class Logout(LogoutView):
     template_name = 'mainapp/index.html'
@@ -120,16 +116,19 @@ class UserProfileView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(UserProfileView, self).get_context_data(**kwargs)
         context['baskets'] = Basket.objects.filter(user=self.request.user)
+        context['profile'] = UserProfileEditForm(instance=self.request.user.userprofile)
         return context
 
     def get_object(self, queryset=None):
         return User.objects.get(id=self.request.user.pk)
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(data=request.POST,files=request.FILES,instance=self.get_object())
-        if form.is_valid():
+        form = self.form_class(data=request.POST,files=request.FILES,instance=request.user)
+        edit_form = UserProfileEditForm(data=request.POST, instance=request.user.userprofile)
+        if form.is_valid() and edit_form.is_valid():
             form.save()
-            messages.success(request, "Вы успешно прошли регистрацию")
+            # edit_form.save()
+            # messages.success(request, "Вы успешно прошли регистрацию")
             return redirect(self.success_url)
         return redirect(self.success_url)
 
@@ -149,7 +148,7 @@ def verify(request, email, activation_key):
             user.activation_key=''
             user.is_active = True
             user.save()
-            auth.login(request, user)
+            auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return render(request,'users/verification.html')
     except Exception as e:
         HttpResponseRedirect(reverse('index'))

@@ -43,6 +43,12 @@
                     <input class="btn btn-primary" type="submit" value="Авторизоваться">
                 </div>
             </form>
+            <div class="list-group-horizontal card-footer text-center">
+                <a href="{% url 'social:begin' 'vk-oauth2'%}?next=/">
+                    <i class="fab fa-vk"></i>
+                </a>
+
+            </div>
             {% endblock%}
             {% block href %}
             <div class="small"><a href="{% url 'users:register'%}">Нужен аккаунт? Зарегистрируйся</a></div>
