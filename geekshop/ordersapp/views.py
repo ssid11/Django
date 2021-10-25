@@ -1,8 +1,9 @@
 from django.db import transaction
 from django.forms import inlineformset_factory
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
 
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 
 from ordersapp.forms import OrderItemsForm, OrderForm
@@ -115,8 +116,11 @@ class OrderDetail(DetailView):
         context['title'] = 'Просмотр заказа'
         return context
 
-def order_forming_complete(request, pk):
-    pass
+def order_forming_complete(request,pk):
+    order = get_object_or_404(Order, pk=pk)
+    order.status = Order.SENT_TO_PROCEED
+    order.save()
+    return HttpResponseRedirect(reverse('orders:list'))
 
 
 
