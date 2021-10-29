@@ -74,3 +74,21 @@ class OrderItem(models.Model):
 
     def get_product_cost(self):
         return self.product.price * self.quantity
+
+@receiver(pre_save, sender=OrderItem)
+@receiver(pre_save, sender=Basket)
+def product_quantity_update_save(sender, instance, **kwargs):
+    instance.product.quantity -= instance.quantity
+    instance.product.save()
+
+@receiver(pre_delete, sender=OrderItem)
+@receiver(pre_delete, sender=Basket)
+def product_quantity_update_delete(sender, instance, **kwargs):
+    if instance.pk:
+        instance.product.quantity -= instance.quantity - \
+                                 instance.__class__.get_item(instance.pk)
+        # instance.__class__.objects.get_item(id=instance.pk).quantity
+    else:
+        instance.product.quantity -= instance.quantity
+    # if instance.product.quantity >= 0:
+    instance.product.save()

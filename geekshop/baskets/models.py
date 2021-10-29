@@ -14,7 +14,7 @@ class BasketQSetManager(models.QuerySet):
 
 
 class Basket(models.Model):
-    objects = BasketQSetManager.as_manager()
+    # objects = BasketQSetManager.as_manager()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
