@@ -10,6 +10,9 @@ from ordersapp.forms import OrderItemsForm, OrderForm
 from ordersapp.models import Order, OrderItem
 from baskets.models import Basket
 
+from django.dispatch import receiver
+from django.db.models.signals import pre_save, pre_delete
+
 
 class OrderList(ListView):
     model = Order
@@ -17,10 +20,6 @@ class OrderList(ListView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user,is_active=True)
-
-
-# class OrderItemsForm(object):
-#     pass
 
 
 class OrderCreate(CreateView):
@@ -66,8 +65,8 @@ class OrderCreate(CreateView):
 
             if self.object.get_total_cost() == 0:
                 self.object.delete()
+        return super(OrderCreate, self).form_valid(form)
 
-        return super().form_valid(form)
 
 class OrderUpdate(UpdateView):
     model = Order
@@ -83,7 +82,9 @@ class OrderUpdate(UpdateView):
             formset = OrderFormSet(self.request.POST,instance=self.object)
         else:
             formset = OrderFormSet(instance=self.object)
-
+            for form in formset:
+                if form.instance.pk:
+                    form.initial['price'] = form.instance.product.price
         context['orderitems'] = formset
         return context
 
@@ -100,8 +101,8 @@ class OrderUpdate(UpdateView):
 
             if self.object.get_total_cost() == 0:
                 self.object.delete()
+        return super(OrderUpdate, self).form_valid(form)
 
-        return super().form_valid(form)
 
 class OrderDelete(DeleteView):
     model = Order
@@ -120,6 +121,17 @@ def order_forming_complete(request,pk):
     order = get_object_or_404(Order, pk=pk)
     order.status = Order.SENT_TO_PROCEED
     order.save()
+    return  HttpResponseRedirect(reverse('orders:list'))
+
+
+
+def payment_result(request):
+    status = request.GET.get('ik_inv_st')
+    if status == 'success':
+        order_pk = request.GET.get('ik_pm_no')
+        order_item = Order.objects.get(pk=order_pk)
+        order_item.status = Order.PAID
+        order_item.save()
     return HttpResponseRedirect(reverse('orders:list'))
 
 
