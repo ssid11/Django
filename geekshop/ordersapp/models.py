@@ -1,5 +1,9 @@
 from django.db import models
 from django.conf import settings
+from django.db.models.signals import pre_save, pre_delete
+from django.dispatch import receiver
+
+from baskets.models import Basket
 from mainapp.models import Product
 
 
@@ -48,7 +52,7 @@ class Order(models.Model):
     def delete(self):
         for item in self.orderitems.select_related():
             item.product.quantity += item.quantity
-            item.product.save()
+            item.save()
 
         self.is_active = False
         self.save()
@@ -64,6 +68,27 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(verbose_name='количество',
                                            default=0)
 
+    @staticmethod
+    def get_item(pk):
+        return OrderItem.objects.get(id=pk).quantity
+
     def get_product_cost(self):
         return self.product.price * self.quantity
 
+@receiver(pre_save, sender=OrderItem)
+@receiver(pre_save, sender=Basket)
+def product_quantity_update_save(sender, instance, **kwargs):
+    instance.product.quantity -= instance.quantity
+    instance.product.save()
+
+@receiver(pre_delete, sender=OrderItem)
+@receiver(pre_delete, sender=Basket)
+def product_quantity_update_delete(sender, instance, **kwargs):
+    if instance.pk:
+        instance.product.quantity -= instance.quantity - \
+                                 instance.__class__.get_item(instance.pk)
+        # instance.__class__.objects.get_item(id=instance.pk).quantity
+    else:
+        instance.product.quantity -= instance.quantity
+    # if instance.product.quantity >= 0:
+    instance.product.save()
