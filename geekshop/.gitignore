@@ -3,7 +3,7 @@ db.sqlite3
 pycache/
 __pycache__/
 README.md
-media/
+#media/
 venv/
 .env
 
