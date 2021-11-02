@@ -1,5 +1,5 @@
-window.onload =
-function () {
+//window.onload =
+$(document).ready(function () {
 
  $('.category').on('click', 'a',  function(){
     var t_href = event.target;
@@ -40,4 +40,4 @@ return false
 //    event.preventDefault();
 return false
  });
-};
+});
