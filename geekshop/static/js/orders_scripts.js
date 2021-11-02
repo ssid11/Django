@@ -1,4 +1,6 @@
-window.onload = function () {
+//window.onload =
+$(document).ready(
+function () {
 
     let _quantity, _price, orderitem_num, delta_quantity, orderitem_quantity, delta_cost;
     let quantity_arr = []
@@ -68,4 +70,4 @@ window.onload = function () {
 
     }
 
-}
+})

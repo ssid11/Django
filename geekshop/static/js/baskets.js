@@ -1,4 +1,5 @@
-window.onload =
+//window.onload =
+$(document).ready(
 function () {
 
  $('.baskets_lst').on('click', 'input[type="number"]',  function(){
@@ -13,5 +14,5 @@ function () {
 //    event.preventDefault();
 return false
  });
-};
+});
 
