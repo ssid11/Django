@@ -1,0 +1,4 @@
+http://127.0.0.1/orders/
+http://127.0.0.1/products/
+http://127.0.0.1/users/profile/
+http://127.0.0.1/
