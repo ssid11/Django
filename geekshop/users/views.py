@@ -115,12 +115,12 @@ class UserProfileView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(UserProfileView, self).get_context_data(**kwargs)
-        context['baskets'] = Basket.objects.filter(user=self.request.user)
+        context['baskets'] = Basket.objects.select_related().filter(user=self.request.user)
         context['profile'] = UserProfileEditForm(instance=self.request.user.userprofile)
         return context
 
     def get_object(self, queryset=None):
-        return User.objects.get(id=self.request.user.pk)
+        return User.objects.select_related().get(id=self.request.user.pk)
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(data=request.POST,files=request.FILES,instance=request.user)
@@ -142,7 +142,7 @@ def send_verify_link(user):
 
 def verify(request, email, activation_key):
     try:
-        user = User.objects.get(email = email)
+        user = User.objects.select_related().get(email = email)
         if user and user.activation_key == activation_key and not user.is_activation_key_expired():
             user.activation_key_created=None
             user.activation_key=''

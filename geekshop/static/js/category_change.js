@@ -1,4 +1,5 @@
-window.onload =
+//window.onload =
+$(document).ready(
 function () {
 
  $('.category').on('click', 'a',  function(){
@@ -40,4 +41,4 @@ return false
 //    event.preventDefault();
 return false
  });
-};
+});
