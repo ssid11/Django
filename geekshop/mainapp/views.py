@@ -14,7 +14,7 @@ def index(request):
 
 def products(request, category_id=None, page_id=1):
     categories = ProductCategory.objects.all()
-    products = Product.objects.filter(category_id=category_id) if category_id != None else Product.objects.all()
+    products = Product.objects.select_related().filter(category_id=category_id) if category_id != None else Product.objects.select_related().all()
     paginator = Paginator(products,per_page=2)
     try:
         products_paginator = paginator.page(page_id)
@@ -30,7 +30,7 @@ def products(request, category_id=None, page_id=1):
 
 def cat_change(request, id):
     if request.is_ajax():
-        products = Product.objects.filter(category=id)
+        products = Product.objects.select_related().filter(category=id)
         try:
             result = render_to_string('mainapp/produts_box.html',{'products': products})
         except Exception as e:

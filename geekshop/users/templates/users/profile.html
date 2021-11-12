@@ -2,7 +2,7 @@
 {%load static%}
 <!-- Custom styles for this template -->
 {% block css %}
-<link href="{% static '/css/profile.css'%}" rel="stylesheet">
+<link href="{% static 'css/profile.css'%}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -24,7 +24,7 @@
                      src="{% if user.image %}
                              {{user.image.url}}
                          {% else %}
-                            {% static '/vendor/img/users/default_avatar.jpg'%}
+                            {% static 'vendor/img/users/default_avatar.jpg'%}
                         {% endif %}"
                      class="img-thumbnail">
             </div>

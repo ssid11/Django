@@ -19,7 +19,7 @@ class OrderList(ListView):
     fields = []
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user,is_active=True)
+        return Order.objects.select_related().filter(user=self.request.user,is_active=True)
 
 
 class OrderCreate(CreateView):
@@ -35,7 +35,7 @@ class OrderCreate(CreateView):
         if self.request.POST:
             formset = OrderFormSet(self.request.POST)
         else:
-            basket_items = Basket.objects.filter(user=self.request.user)
+            basket_items = Basket.objects.select_related().filter(user=self.request.user)
             if basket_items:
                 OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemsForm,
                                                      extra=basket_items.count())
@@ -129,7 +129,7 @@ def payment_result(request):
     status = request.GET.get('ik_inv_st')
     if status == 'success':
         order_pk = request.GET.get('ik_pm_no')
-        order_item = Order.objects.get(pk=order_pk)
+        order_item = Order.objects.select_related().get(pk=order_pk)
         order_item.status = Order.PAID
         order_item.save()
     return HttpResponseRedirect(reverse('orders:list'))

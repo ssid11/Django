@@ -1,6 +1,7 @@
-window.onload =
+//window.onload =
+$(document).ready(
 function () {
-
+console.log('basket.js')
  $('.baskets_lst').on('click', 'input[type="number"]',  function(){
     var t_href = event.target;
     console.log(t_href.value)
@@ -13,5 +14,5 @@ function () {
 //    event.preventDefault();
 return false
  });
-};
+});
 

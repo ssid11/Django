@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-
+from django.views.decorators.cache import cache_page
 from .views import  UserLoginView, Logout, UserRegisterView, UserProfileView, verify
 
 app_name = 'users'
@@ -24,7 +24,7 @@ urlpatterns = [
     # path('register/', register, name='register'),
     path('register/', UserRegisterView.as_view(), name='register'),
     # path('profile/', profile, name='profile'),
-    path('profile/', UserProfileView.as_view(), name='profile'),
+    path('profile/', cache_page(3600)(UserProfileView.as_view()), name='profile'),
     # path('logout/', logout, name='logout'),
     path('logout/', Logout.as_view(), name='logout'),
     path('verify/<str:email>/<str:activation_key>/', verify, name='verify'),
